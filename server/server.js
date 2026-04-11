@@ -14,9 +14,31 @@ const Admin = require('./models/Admin');
 
 const app = express();
 
+const normalizeOrigin = (origin) => {
+  if (!origin) return null;
+  const trimmed = origin.trim().replace(/\/+$/, '');
+  if (!trimmed) return null;
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+};
+
+const configuredOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || '')
+  .split(',')
+  .map(normalizeOrigin)
+  .filter(Boolean);
+
+const allowedOrigins =
+  configuredOrigins.length > 0
+    ? configuredOrigins
+    : ['http://localhost:5173', 'http://localhost:5174'];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );
