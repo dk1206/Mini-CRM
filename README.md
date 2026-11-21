@@ -1,115 +1,122 @@
-# Mini CRM (React + Express + SQL)
+# Mini-CRM
 
-A production-style mini CRM to manage incoming leads from website contact forms.
+A full-stack customer relationship management application for capturing, organizing, and tracking leads from website contact forms.
+
+## Overview
+
+Mini-CRM provides an admin dashboard and REST API for managing incoming leads through a simple workflow: **New → Contacted → Converted**.
 
 ## Features
 
-- JWT admin login with bcrypt password hashing
-- Protected admin dashboard routes
-- Full lead management CRUD API
-- Lead status workflow: `new` -> `contacted` -> `converted`
-- Search, filter, sorting, pagination
-- Lead details modal and notes modal
+- Admin authentication with JWT and bcrypt password hashing
+- Protected dashboard and lead-management routes
+- Create, view, update, and delete lead records
+- Lead status workflow: new, contacted, and converted
+- Search, filtering, sorting, and pagination
+- Lead details and notes modals
 - Dashboard analytics cards
-- Glassmorphism UI with responsive layout and transitions
-- Toast notifications, loading states, delete confirmation
+- Responsive interface, loading states, toast notifications, and delete confirmation
+
+## Tech Stack
+
+| Layer | Technologies |
+| --- | --- |
+| Frontend | React, React Router, Vite |
+| API | Node.js, Express |
+| Database / ORM | SQLite, MySQL, PostgreSQL, Sequelize |
+| Authentication | JSON Web Tokens, bcryptjs |
+| HTTP client | Axios |
+| UI feedback | React Toastify |
 
 ## Project Structure
 
 ```text
-mini-crm/
+Mini-CRM/
 ├── client/
-│   ├── src/components/
-│   ├── src/pages/
-│   ├── src/context/
-│   ├── src/services/
-│   ├── src/App.jsx
-│   └── src/main.jsx
+│   └── src/
+│       ├── components/
+│       ├── pages/
+│       ├── context/
+│       └── services/
 ├── server/
-│   ├── config/db.js
-│   ├── middleware/authMiddleware.js
-│   ├── models/Admin.js
-│   ├── models/Lead.js
-│   ├── routes/authRoutes.js
-│   ├── routes/leadRoutes.js
+│   ├── config/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
 │   └── server.js
-├── .env
 ├── .env.example
 └── package.json
 ```
 
-## Setup
+## Getting Started
 
-1. Install dependencies:
+### Prerequisites
+
+- Node.js and npm
+- A supported database: SQLite, MySQL, or PostgreSQL
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/dk1206/Mini-CRM.git
+cd Mini-CRM
+```
+
+### 2. Install dependencies
 
 ```bash
 npm install
 npm --prefix client install
 ```
 
-2. Configure your database in `.env`:
+### 3. Configure environment variables
 
-### SQLite (default, file-based)
-```env
-DB_TYPE=sqlite
-SQLITE_STORAGE=./server/data/mini-crm.sqlite
-```
+Create a local `.env` file using `.env.example` as a reference. Configure the database connection, JWT secret, and admin credentials for your environment.
 
-### PostgreSQL
-```env
-DB_TYPE=postgres
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=mini_crm
-DB_USER=postgres
-DB_PASSWORD=your_password
-```
+For SQLite, the configuration uses a local database file. For MySQL or PostgreSQL, provide the corresponding host, port, database name, username, and password.
 
-### MySQL
-```env
-DB_TYPE=mysql
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=mini_crm
-DB_USER=root
-DB_PASSWORD=your_password
-```
+**Security:** Use a strong, unique JWT secret and non-default admin credentials. Never commit your real `.env` file or production secrets.
 
-3. Update `JWT_SECRET` and admin credentials in `.env` if needed.
-
-4. Start both frontend and backend:
+### 4. Start the application
 
 ```bash
 npm run dev
 ```
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:5000`
+The development servers use these default local addresses:
 
-## API Endpoints
+- Frontend: [http://localhost:5173](http://localhost:5173)
+- Backend: [http://localhost:5000](http://localhost:5000)
 
-### Auth
+## API Overview
 
-- `POST /api/auth/login`
+| Method | Endpoint | Purpose | Access |
+| --- | --- | --- | --- |
+| POST | `/api/auth/login` | Admin login | Public |
+| GET | `/api/leads` | Retrieve leads | Protected |
+| POST | `/api/leads` | Submit a lead from a contact form | Public |
+| PUT | `/api/leads/:id` | Update a lead | Protected |
+| DELETE | `/api/leads/:id` | Delete a lead | Protected |
 
-### Leads
+## Available Scripts
 
-- `GET /api/leads` (protected)
-- `POST /api/leads` (public, for website contact forms)
-- `PUT /api/leads/:id` (protected)
-- `DELETE /api/leads/:id` (protected)
+Run these commands from the repository root:
 
-## Default Admin
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the frontend and backend in development |
+| `npm run server` | Start the backend with Nodemon |
+| `npm run client` | Start the Vite frontend |
+| `npm run build` | Build the frontend for production |
+| `npm start` | Start the backend |
 
-On first startup, a default admin is seeded if it does not already exist.
+## Production Notes
 
-- Email: `admin@mini-crm.com`
-- Password: `admin12345`
+- Configure production environment variables before deployment.
+- Set the frontend API URL as required by your hosting setup.
+- Use HTTPS and secure database credentials in production.
+- Do not expose admin credentials or secrets in source control.
 
-Override defaults using `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`.
+## Repository
 
-## Notes
-
-- Vite proxy is configured so frontend calls `/api/*` directly in development.
-- For production deployment, set `VITE_API_URL` in the frontend build environment if needed.
-- The backend uses Sequelize with SQLite (SQL). The database file is auto-created at `server/data/mini-crm.sqlite`.
+[github.com/dk1206/Mini-CRM](https://github.com/dk1206/Mini-CRM)
